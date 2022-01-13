@@ -1,23 +1,6 @@
-import { ArgsType, Field } from "@nestjs/graphql";
-import { Contains, IsString, Length } from "class-validator";
+import { InputType, OmitType } from "@nestjs/graphql";
 
-@ArgsType()
-export class CreateUserDto {
-    @Field(type => String)
-    @IsString()
-    @Length(5,10)
-    username: string
+import { User } from "../entities/user.entity";
 
-    @Field(type => String)
-    @IsString()
-    @Contains("@")
-    email: string
-
-    @Field(type => String)
-    @IsString()
-    password: string
-
-    @Field(type => String)
-    @IsString()
-    profileImage: string
-}
+@InputType()
+export class CreateUserDto extends OmitType(User, ['id']) {}
