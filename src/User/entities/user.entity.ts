@@ -10,21 +10,17 @@ export class User {
 
   @Field(type => String)
   @Column()
-  name: string;
+  username: string;
 
   @Field(type => Boolean)
   @Column()
-  isVegan: boolean;
+  email: boolean;
 
   @Field(type => String)
   @Column()
-  address: string;
+  password: string;
 
   @Field(type => String)
   @Column()
-  ownersName: string;
-
-  @Field(type => String)
-  @Column()
-  categoryName: string;
+  profileImage: string;
 }
