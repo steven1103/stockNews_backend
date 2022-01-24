@@ -1,6 +1,9 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Contains, IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { InternalServerErrorException } from '@nestjs/common';
+import { IsEmail } from 'class-validator';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -20,7 +23,7 @@ export class User {
   @Field((type) => String)
   @Column()
   @IsString()
-  @Contains('@')
+  @IsEmail()
   email: string;
 
   @Field((type) => String)
@@ -39,4 +42,14 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    try {
+      this.password = await bcrypt.hash(this.password, 10);
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException();
+    }
+  }
 }
