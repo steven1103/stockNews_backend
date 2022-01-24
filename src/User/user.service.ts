@@ -9,19 +9,29 @@ import { User } from "./entities/user.entity";
 export class UserService {
     constructor (
         @InjectRepository(User)
-        private readonly user: Repository<User>,
+        private readonly users: Repository<User>,
      ) {}
     
      getAll(): Promise<User[]> {
-         return this.user.find()
+         return this.users.find()
      }
 
-     async createUser(createUserDto: CreateUserDto): Promise<User> {
-         const newUser = this.user.create(createUserDto)
-         return this.user.save(newUser)
-     }
+     async createAccount({
+        email,
+        password,
+      }: CreateUserDto): Promise<string | undefined> {
+        try {
+          const exists = await this.users.findOne({ email });
+          if (exists) {
+            return 'There is a user with that email already';
+          }
+          await this.users.save(this.users.create({ email, password }));
+        } catch (e) {
+          return "Couldn't create account";
+        }
+      }
 
       updateUser({ id, data }: UpdateUserDto) {
-         return this.user.update(id, { ...data })
+         return this.users.update(id, { ...data })
      }
 }
