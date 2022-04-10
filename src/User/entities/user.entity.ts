@@ -1,10 +1,28 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Contains, IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
+import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { IsEmail } from 'class-validator';
 
+enum UserRole {
+  Admin,
+  Client,
+}
+
+registerEnumType(UserRole, { name: 'UserRole' });
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
@@ -36,6 +54,10 @@ export class User {
   @IsString()
   @IsOptional()
   profileImage: string;
+
+  @Column({ type: 'enum', enum: UserRole })
+  @Field((type) => UserRole)
+  role: UserRole;
 
   @CreateDateColumn()
   createdAt: Date;

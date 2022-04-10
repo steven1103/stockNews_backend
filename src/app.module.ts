@@ -6,6 +6,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from './User/user.module';
 import { User } from './User/entities/user.entity';
 import { CommentModule } from './comment/comment.module';
+import { NewsModule } from './news/news.module';
+import { JwtModule } from './jwt/jwt.module';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { CommentModule } from './comment/comment.module';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
+        TOKEN_SECRET : Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -35,7 +38,9 @@ import { CommentModule } from './comment/comment.module';
     }),
     GraphQLModule.forRoot({ autoSchemaFile: true }),
     UserModule,
-    CommentModule
+    CommentModule,
+    NewsModule,
+    JwtModule.forRoot()
   ],
 })
 export class AppModule {}
